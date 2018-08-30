@@ -1,1 +1,89 @@
+    <script>
+// Create the map 
+       var map = new ol.Map({
+        layers: [
+          new ol.layer.Tile({
+            source: new ol.source.OSM()
+          })
+        ],
+        target: 'map',
+        view: new ol.View({
+          center: [-8558705,4688797],
+          zoom: 10
+        })
+      });
+// ADD LAYERS....
 
+	var pg_ES_zones = new ol.layer.Image({
+          source: new ol.source.ImageWMS({
+            url: 'http://geogws002.ad.umd.edu:8080/geoserver/GEOG670S2018/wms',
+            params: {'LAYERS': 'GEOG670S2018:17pg_prc_new'},
+            serverType: 'geoserver'
+          })	
+		});	
+	 pg_ES_zones.setOpacity(0.3);	
+
+	var pg_ES_schls = new ol.layer.Image({
+          source: new ol.source.ImageWMS({
+            url: 'http://geogws002.ad.umd.edu:8080/geoserver/GEOG670S2018/wms',
+            params: {'LAYERS': 'GEOG670S2018:elem_schls'},
+            serverType: 'geoserver'
+          })	
+		});	
+	 
+
+	//var pctTch = document.getElementById("pctTch").value;
+	//var tchCert = document.getElementById("tchCert").value;	
+	var pctTch = 2;
+	var tchCert = "cnc_ppct";
+	var teacher_six = new ol.layer.Image({
+          source: new ol.source.ImageWMS({
+            url: 'http://geogws002.ad.umd.edu:8080/geoserver/GEOG670S2018/wms',
+            //params: {'LAYERS': 'GEOG670S2018:16teach'},
+			params: {'LAYERS': 'GEOG670S2018:16teach', 'viewparams': 'g:'+pctTch+';c:'+tchCert},
+            serverType: 'geoserver'
+          })	
+		});	
+
+
+	
+	var subject = document.getElementById("subject").value;
+	var pop = document.getElementById("pop").value;
+	var testScore = document.getElementById("testScore").value;
+	//var subject = "Mathematics Grade 3";
+	//var pop = 20;
+	//var testScore = "l4_met";
+	
+	//var viewparameters = 'h:' + document.getElementById("subject").value + ';m:' + document.getElementById("pop").value ;
+	
+	var Student_perfm = new ol.layer.Image({
+          source: new ol.source.ImageWMS({
+            url: 'http://geogws002.ad.umd.edu:8080/geoserver/GEOG670S2018/wms',
+            //params: {'LAYERS': 'GEOG670S2018:17scores'},
+			params: {'LAYERS': 'GEOG670S2018:17scores', 'viewparams': 'a:'+subject+';p:' + pop+';s:' + testScore},
+			//params: {'LAYERS': 'GEOG670S2018:17scores', 'viewparams': viewparameters},
+            serverType: 'geoserver'
+          })	
+		});
+	
+	
+	function findSch_zones() {
+		viewparameters = 'a:' + document.getElementById('subject').value + ';p:' + document.getElementById('pop').value + ';s:' + document.getElementById('testScore').value ;
+		Student_perfm.getSource()
+		.updateParams({'LAYERS': 'GEOG670S2018:17scores', 'viewparams': viewparameters});
+	}
+
+	function findTchCerts(){
+		viewparameters1 = 'g:' + document.getElementById('pctTch').value + ';c:' + document.getElementById('tchCert').value ;
+		teacher_six.getSource()
+		.updateParams({'LAYERS': 'GEOG670S2018:16teach', 'viewparams': viewparameters1});
+	}	
+	
+	
+	map.addLayer(pg_ES_zones);
+	map.addLayer(Student_perfm);
+	map.addLayer(pg_ES_schls);
+	map.addLayer(teacher_six);
+	
+		
+    </script>
